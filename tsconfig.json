@@ -1,0 +1,12 @@
+{
+  "extends": "fastify-tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "typeRoots": ["./src/plugins", "./node_modules/@types"]
+  },
+  "include": ["src/**/*.ts"]
+}
