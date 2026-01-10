@@ -9,15 +9,18 @@ import {
 import { User } from '../user/user.entity'
 import { AuthRepository } from './auth.repository'
 import { AuthService } from './auth.service'
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 
 const authRoutes: FastifyPluginAsync = async (fastify) => {
-  const repo = fastify.db.getRepository(User)
+  const app = fastify.withTypeProvider<TypeBoxTypeProvider>();
+  const repo = app.db.getRepository(User)
   const authService = new AuthService(new AuthRepository(repo))
 
   // REGISTER
-  fastify.post(
+  app.post(
     '/register',
     {
+      config: { rateLimit: { max: 5, timeWindow: "1 minute" }, },
       schema: {
         tags: ['Auth'],
         body: RegisterBodySchema,
@@ -41,7 +44,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   )
 
   // LOGIN
-  fastify.post(
+  app.post(
     '/login',
     {
       schema: {
@@ -67,7 +70,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   )
 
   // REFRESH
-  fastify.post(
+  app.post(
     '/refresh',
     {
       schema: {

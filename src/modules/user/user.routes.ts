@@ -8,13 +8,15 @@ import { User } from './user.entity'
 import { UserRepository } from './user.repository'
 import { UserService } from './user.service'
 import { UserController } from './user.controller'
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 
 const userRoutes: FastifyPluginAsync = async (fastify) => {
-  const repo = fastify.db.getRepository(User)
+  const app = fastify.withTypeProvider<TypeBoxTypeProvider>();
+  const repo = app.db.getRepository(User)
   const service = new UserService(new UserRepository(repo))
   const controller = new UserController(service)
 
-  fastify.get(
+  app.get(
     '/',
     {
       preHandler: [fastify.authenticate],
@@ -28,7 +30,7 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
     controller.getUsers
   )
 
-  fastify.post(
+  app.post(
     '/',
     {
       preHandler: [fastify.authenticate],

@@ -2,6 +2,7 @@ import fp from 'fastify-plugin'
 import { DataSource } from 'typeorm'
 import 'reflect-metadata'
 import { User } from '../modules/user/user.entity'
+import { Post } from '../modules/post/post.entity'
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -13,7 +14,8 @@ export const AppDataSource = new DataSource({
   synchronize: true, // ❗ false in production
   logging: true,
   entities: [
-    User
+    User,
+    Post
   ]
 })
 
