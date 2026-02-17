@@ -8,11 +8,11 @@ import { Chapter } from '../modules/book/entity/chapter.entity'
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'yepyae',
-  password: 'yepyae',
-  database: 'novelfull',
+  host: process.env.db_host,
+  port: Number(process.env.db_port),
+  username: process.env.db_user,
+  password: process.env.db_pass,
+  database: process.env.db_name,
   synchronize: true, // ❗ false in production
   logging: true,
   entities: [
