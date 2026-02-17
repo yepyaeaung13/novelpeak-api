@@ -3,6 +3,8 @@ import { DataSource } from 'typeorm'
 import 'reflect-metadata'
 import { User } from '../modules/user/user.entity'
 import { Post } from '../modules/post/post.entity'
+import { Book } from '../modules/book/entity/book.entity'
+import { Chapter } from '../modules/book/entity/chapter.entity'
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -10,12 +12,14 @@ export const AppDataSource = new DataSource({
   port: 5432,
   username: 'yepyae',
   password: 'yepyae',
-  database: 'dilocode_db',
+  database: 'novelfull',
   synchronize: true, // ❗ false in production
   logging: true,
   entities: [
     User,
-    Post
+    Post,
+    Book,
+    Chapter
   ]
 })
 

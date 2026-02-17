@@ -1,5 +1,5 @@
 {
-  "name": "dilocode-api",
+  "name": "novelfull-api",
   "version": "1.0.0",
   "description": "This project was bootstrapped with Fastify-CLI.",
   "main": "app.ts",
@@ -8,11 +8,12 @@
   },
   "scripts": {
     "test": "npm run build:ts && tsc -p test/tsconfig.json && c8 node --test -r ts-node/register \"test/**/*.ts\"",
-    "start": "npm run build:ts && fastify start -l info dist/app.js",
+    "start": "npm run build:ts && fastify start -a 0.0.0.0 -p 3000 -l info dist/app.js",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
     "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
-    "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js"
+    "dev:start": "fastify start -a 0.0.0.0 -p 3000 -l info --ignore-watch=.ts$ -w dist/app.js",
+    "seed": "ts-node src/seeds/seed.ts"
   },
   "keywords": [],
   "author": "",

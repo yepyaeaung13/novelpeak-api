@@ -32,21 +32,10 @@ export default fp<SecurityPluginOptions>(
     });
 
     // 🌐 CORS (LOCKED)
-    if (process.env.NODE_ENV === "production") {
-      await fastify.register(cors, {
-        origin: (origin, cb) => {
-          if (!origin) return cb(null, true); // server-to-server
-
-          if (options.cors?.origins.includes(origin)) {
-            cb(null, true);
-          } else {
-            cb(new Error("CORS not allowed"), false);
-          }
-        },
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE"],
-      });
-    }
+    await fastify.register(cors, {
+      origin: true,
+      credentials: true,
+    });
   },
   {
     name: "security-plugin",

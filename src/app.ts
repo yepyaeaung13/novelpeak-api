@@ -20,6 +20,7 @@ const options: AppOptions = {
   },
   cors: {
     origins: [
+      "*",
       "https://app.example.com",
       "https://admin.example.com",
     ],
