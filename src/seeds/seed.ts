@@ -1,7 +1,7 @@
 import { AppDataSource } from "../plugins/typeorm"
 import { seedNovels } from "./seed.novel"
 
-async function runSeed() {
+export async function runSeed() {
   try {
     await AppDataSource.initialize()
     console.log("📦 Database connected")
@@ -16,6 +16,4 @@ async function runSeed() {
     process.exit(1)
   }
 }
-
-runSeed()
 

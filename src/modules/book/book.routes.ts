@@ -23,7 +23,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   const controller = new BookController(service)
 
   app.get(
-    '/',
+    '/books',
     {
       preHandler: [fastify.authenticate],
       schema: {
@@ -37,7 +37,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   )
 
   app.get(
-    '/:id',
+    '/books/:id',
     {
       preHandler: [fastify.authenticate],
       schema: {
@@ -51,7 +51,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   )
 
    app.get(
-    '/chapters/:id',
+    '/books/chapters/:id',
     {
       preHandler: [fastify.authenticate],
       schema: {
@@ -64,7 +64,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.getChapterById
   )
 
-  app.get("/trending", {
+  app.get("/books/trending", {
     preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
@@ -76,7 +76,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.getTrendingBooks
   )
 
-  app.get("/discover", {
+  app.get("/books/discover", {
     preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
@@ -88,7 +88,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.getDiscoverBooks
   )
 
-  app.get("/recommended", {
+  app.get("/books/recommended", {
     preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
@@ -100,7 +100,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.getRecommendedBooks
   )
 
-  app.get("/my-books", {
+  app.get("/books/my-books", {
     preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
@@ -113,7 +113,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   )
 
   app.post(
-    '/',
+    '/books',
     {
       preHandler: [fastify.authenticate],
       schema: {
@@ -125,6 +125,21 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       }
     },
     controller.createBook
+  )
+
+   app.post(
+    '/books/seed-data',
+    {
+      // preHandler: [fastify.authenticate],
+      schema: {
+        tags: ['Post'],
+        // body: CreateBookBodySchema,
+        // response: {
+        //   201: BookSchema
+        // }
+      }
+    },
+    controller.seedBooks
   )
 }
 

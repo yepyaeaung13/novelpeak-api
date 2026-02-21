@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { PostService } from "./book.service";
+import { runSeed } from "../../seeds/seed";
 
 type BookQuery = {
   page?: number;
@@ -71,5 +72,13 @@ export class BookController {
     const { name, email } = request.body;
     const user = await this.service.createBook(name, email);
     return reply.code(201).send(user);
+  };
+
+   seedBooks = async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ) => {
+    await runSeed();
+    return reply.code(201).send({ message: "Seed successfully."});
   };
 }
