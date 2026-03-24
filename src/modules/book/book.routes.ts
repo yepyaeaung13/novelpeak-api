@@ -1,7 +1,6 @@
 import { FastifyPluginAsync } from 'fastify'
 import {
-  CreateBookBodySchema,
-  BookSchema
+  CreateBookBodySchema
 } from './book.schema'
 import { Book } from './entity/book.entity'
 import { BookRepository, ChapterRepository } from './book.repository'
