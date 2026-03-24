@@ -5,6 +5,7 @@ import { User } from '../modules/user/user.entity'
 import { Post } from '../modules/post/post.entity'
 import { Book } from '../modules/book/entity/book.entity'
 import { Chapter } from '../modules/book/entity/chapter.entity'
+import { Category } from '../modules/book/entity/category.entity'
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -19,7 +20,8 @@ export const AppDataSource = new DataSource({
     User,
     Post,
     Book,
-    Chapter
+    Chapter,
+    Category
   ]
 })
 

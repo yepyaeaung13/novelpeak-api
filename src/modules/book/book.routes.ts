@@ -28,9 +28,6 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       preHandler: [fastify.authenticate],
       schema: {
         tags: ['Book'],
-        // response: {
-        //   200: PaginatedBookResponseSchema
-        // }
       }
     },
     controller.getBooks
@@ -42,9 +39,6 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       preHandler: [fastify.authenticate],
       schema: {
         tags: ['Book'],
-        // response: {
-        //   200: PaginatedBookResponseSchema
-        // }
       }
     },
     controller.getBookById
@@ -56,9 +50,6 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       preHandler: [fastify.authenticate],
       schema: {
         tags: ['Book'],
-        // response: {
-        //   200: PaginatedBookResponseSchema
-        // }
       }
     },
     controller.getChapterById
@@ -68,9 +59,6 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
-      // response: {
-      //   200: PaginatedBookResponseSchema
-      // }
     }
   },
     controller.getTrendingBooks
@@ -80,9 +68,6 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
-      // response: {
-      //   200: PaginatedBookResponseSchema
-      // }
     }
   },
     controller.getDiscoverBooks
@@ -92,9 +77,6 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
-      // response: {
-      //   200: PaginatedBookResponseSchema
-      // }
     }
   },
     controller.getRecommendedBooks
@@ -104,9 +86,6 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
-      // response: {
-      //   200: PaginatedBookResponseSchema
-      // }
     }
   },
     controller.getBooksByUserId
@@ -119,9 +98,6 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       schema: {
         tags: ['Post'],
         body: CreateBookBodySchema,
-        response: {
-          201: BookSchema
-        }
       }
     },
     controller.createBook
@@ -133,10 +109,6 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       // preHandler: [fastify.authenticate],
       schema: {
         tags: ['Post'],
-        // body: CreateBookBodySchema,
-        // response: {
-        //   201: BookSchema
-        // }
       }
     },
     controller.seedBooks

@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToMany,
 } from "typeorm"
 import { Chapter } from "./chapter.entity"
+import { Category } from "./category.entity"
 
 @Entity("books")
 export class Book {
@@ -36,6 +38,9 @@ export class Book {
 
   @OneToMany(() => Chapter, (chapter) => chapter.book)
   chapters!: Chapter[]
+
+  @ManyToMany(() => Category, (category) => category.books)
+  categories!: Category[]
 
   @CreateDateColumn()
   createdAt!: Date
