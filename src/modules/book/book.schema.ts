@@ -1,6 +1,4 @@
 import { Static, Type } from '@sinclair/typebox'
-import { PaginationMetaSchema } from '../../common/pagination.schema'
-// import { BookStatus } from './entity/book.entity';
 
 export const BookSchema = Type.Object({
   id: Type.Number(),
@@ -21,7 +19,9 @@ export const CreateBookBodySchema = Type.Object({
 })
 export type CreateBookInput = Static<typeof CreateBookBodySchema>;
 
-export const PaginatedBookResponseSchema = Type.Object({
-  data: Type.Array(BookSchema),
-  meta: PaginationMetaSchema
+export const CreateChapterBodySchema = Type.Object({
+  title: Type.String({ minLength: 1 }),
+  content: Type.String({ minLength: 1 }),
+  chapterNumber: Type.Number({ minimum: 1 })
 })
+export type CreateChapterInput = Static<typeof CreateChapterBodySchema>;

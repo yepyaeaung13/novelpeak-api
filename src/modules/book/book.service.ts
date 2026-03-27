@@ -1,8 +1,8 @@
 import { NotFoundError } from '../../common/error'
 import { BookRepository, ChapterRepository } from './book.repository'
-import { CreateBookInput } from './book.schema'
+import { CreateBookInput, CreateChapterInput } from './book.schema'
 
-export class PostService {
+export class BookService {
   constructor(
     private readonly repo: BookRepository,
     private readonly chapterRepo: ChapterRepository,
@@ -60,5 +60,15 @@ export class PostService {
     }
 
     return user
+  }
+
+  async createChapter(bookId: number, chapter: CreateChapterInput) {
+    const book = await this.repo.findById(bookId)
+
+    if (!book) {
+      throw new NotFoundError('Book not found')
+    }
+
+    return this.chapterRepo.create({ ...chapter, book })
   }
 }

@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { PostService } from "./book.service";
+import { BookService } from "./book.service";
 import { runSeed } from "../../seeds/seed";
-import { CreateBookInput } from "./book.schema";
+import { CreateBookInput, CreateChapterInput } from "./book.schema";
 
 type BookQuery = {
   page?: number;
@@ -9,7 +9,7 @@ type BookQuery = {
 };
 
 export class BookController {
-  constructor(private readonly service: PostService) { }
+  constructor(private readonly service: BookService) { }
 
   getBooks = async (
     request: FastifyRequest<{ Querystring: BookQuery }>,
@@ -34,6 +34,13 @@ export class BookController {
 
     const result = await this.service.getChapterById(Number(id));
     return reply.send(result);
+  };
+
+  createChapter = async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const chapter = request.body as CreateChapterInput;
+    const result = await this.service.createChapter(Number(id), chapter);
+    return reply.code(201).send(result);
   };
 
   getTrendingBooks = async (request: FastifyRequest, reply: FastifyReply) => {

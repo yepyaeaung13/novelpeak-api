@@ -66,6 +66,11 @@ export class ChapterRepository {
     return this.repo.findOne({ where: { id }, relations: ["book"] });
   }
 
+  create(data: Partial<Chapter>) {
+    const chapter = this.repo.create(data);
+    return this.repo.save(chapter);
+  }
+
   async findWithNavigation(id: number) {
     const chapter = await this.repo.findOne({
       where: { id },
