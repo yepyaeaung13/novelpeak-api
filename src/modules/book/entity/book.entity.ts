@@ -10,6 +10,12 @@ import {
 import { Chapter } from "./chapter.entity"
 import { Category } from "./category.entity"
 
+export enum BookStatus {
+  ONGOING = "ongoing",
+  COMPLETED = "completed",
+  HIATUS = "hiatus"
+}
+
 @Entity("books")
 export class Book {
   @PrimaryGeneratedColumn()
@@ -35,6 +41,9 @@ export class Book {
 
   @Column({ default: true })
   isPublished!: boolean
+
+  @Column({ type: "enum", enum: BookStatus, default: BookStatus.ONGOING })
+  status!: BookStatus
 
   @OneToMany(() => Chapter, (chapter) => chapter.book)
   chapters!: Chapter[]
