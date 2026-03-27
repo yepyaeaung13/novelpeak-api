@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { PostService } from "./book.service";
 import { runSeed } from "../../seeds/seed";
+import { CreateBookInput } from "./book.schema";
 
 type BookQuery = {
   page?: number;
@@ -8,7 +9,7 @@ type BookQuery = {
 };
 
 export class BookController {
-  constructor(private readonly service: PostService) {}
+  constructor(private readonly service: PostService) { }
 
   getBooks = async (
     request: FastifyRequest<{ Querystring: BookQuery }>,
@@ -66,19 +67,19 @@ export class BookController {
   };
 
   createBook = async (
-    request: FastifyRequest<{ Body: { name: string; email: string } }>,
+    request: FastifyRequest,
     reply: FastifyReply,
   ) => {
-    const { name, email } = request.body;
-    const user = await this.service.createBook(name, email);
+    const book = request.body as CreateBookInput;
+    const user = await this.service.createBook(book);
     return reply.code(201).send(user);
   };
 
-   seedBooks = async (
+  seedBooks = async (
     request: FastifyRequest,
     reply: FastifyReply,
   ) => {
     await runSeed();
-    return reply.code(201).send({ message: "Seed successfully."});
+    return reply.code(201).send({ message: "Seed successfully." });
   };
 }

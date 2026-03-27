@@ -19,7 +19,7 @@ export const CreateBookBodySchema = Type.Object({
   // categories: Type.Array(Type.String({ minLength: 2 })),
   // status: Type.Enum(BookStatus)
 })
-export type CreateBookType = Static<typeof CreateBookBodySchema>;
+export type CreateBookInput = Static<typeof CreateBookBodySchema>;
 
 export const PaginatedBookResponseSchema = Type.Object({
   data: Type.Array(BookSchema),

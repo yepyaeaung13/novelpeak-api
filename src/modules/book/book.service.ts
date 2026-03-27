@@ -1,5 +1,6 @@
 import { NotFoundError } from '../../common/error'
 import { BookRepository, ChapterRepository } from './book.repository'
+import { CreateBookInput } from './book.schema'
 
 export class PostService {
   constructor(
@@ -37,8 +38,8 @@ export class PostService {
     return this.repo.paginateByUserId(userId, page, limit)
   }
 
-  async createBook(name: string, email: string) {
-    // return this.repo.create({ name, email })
+  async createBook(book: CreateBookInput) {
+    return this.repo.create(book)
   }
 
   async getBookById(id: number) {
