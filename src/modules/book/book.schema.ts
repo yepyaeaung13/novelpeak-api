@@ -1,6 +1,6 @@
 import { Static, Type } from '@sinclair/typebox'
 import { PaginationMetaSchema } from '../../common/pagination.schema'
-import { BookStatus } from './entity/book.entity';
+// import { BookStatus } from './entity/book.entity';
 
 export const BookSchema = Type.Object({
   id: Type.Number(),
