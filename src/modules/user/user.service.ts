@@ -1,5 +1,6 @@
 import { NotFoundError } from '../../common/error'
 import { UserRepository } from './user.repository'
+import { CreateUserInput } from './user.schema'
 
 export class UserService {
   constructor(private readonly repo: UserRepository) {}
@@ -18,8 +19,8 @@ export class UserService {
     }
   }
 
-  async createUser(name: string, email: string) {
-    return this.repo.create({ name, email })
+  async createUser(payload: CreateUserInput) {
+    return this.repo.create(payload)
   }
 
   async getUserById(id: number) {

@@ -19,7 +19,7 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   app.get(
     '/',
     {
-      preHandler: [fastify.authenticate],
+      preHandler: [fastify.adminAuthenticate],
       schema: {
         tags: ['User'],
         response: {
@@ -33,7 +33,7 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   app.post(
     '/',
     {
-      preHandler: [fastify.authenticate],
+      preHandler: [fastify.adminAuthenticate],
       schema: {
         tags: ['User'],
         body: CreateUserBodySchema,

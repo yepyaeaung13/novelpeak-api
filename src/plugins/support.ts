@@ -19,12 +19,13 @@ declare module 'fastify' {
     someSupport(): string;
     db: DataSource;
     authenticate: any;
+    adminAuthenticate: any;
   }
 }
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
-    payload: { id: number; email: string }
-    user: { id: number; email: string }
+    payload: { id: number; email: string, userType: string }
+    user: { id: number; email: string; userType: string }
   }
 }

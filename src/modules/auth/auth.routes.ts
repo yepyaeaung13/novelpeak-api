@@ -3,10 +3,10 @@ import {
   RegisterBodySchema,
   LoginBodySchema,
   TokenResponseSchema,
-  RegisterBodyType,
-  LoginBodyType
+  RegisterBodyInput,
+  LoginBodyInput
 } from './auth.schema'
-import { User } from '../user/user.entity'
+import { User, UserType } from '../user/user.entity'
 import { AuthRepository } from './auth.repository'
 import { AuthService } from './auth.service'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
@@ -24,22 +24,27 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
       schema: {
         tags: ['Auth'],
         body: RegisterBodySchema,
-        response: { 201: TokenResponseSchema }
       }
     },
     async (request, reply) => {
-      const { email, password } = request.body as RegisterBodyType
+      const userData = request.body as RegisterBodyInput
 
-      const user = await authService.register(email, password)
+      if (userData.userType && userData.userType !== UserType.READER) {
+        if (!userData.adminSecret || userData.adminSecret !== process.env.ADMIN_SECRET) {
+          throw new Error('Invalid admin secret')
+        }
+      }
 
-      const payload = { id: user.id, email: user.email }
+      const user = await authService.register(userData)
 
-      const accessToken = fastify.jwt.sign(payload, { expiresIn: '15m' })
+      const payload = { id: user.id, email: user.email, userType: user.userType }
+
+      const accessToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
       const refreshToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
 
       await authService.storeRefreshToken(user.id, refreshToken)
 
-      return reply.code(201).send({ accessToken, refreshToken })
+      return reply.code(201).send({ user: payload, accessToken, refreshToken })
     }
   )
 
@@ -50,22 +55,53 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
       schema: {
         tags: ['Auth'],
         body: LoginBodySchema,
-        response: { 200: TokenResponseSchema }
       }
     },
     async (request, reply) => {
-      const { email, password } = request.body as LoginBodyType
+      const { email, password } = request.body as LoginBodyInput
 
       const user = await authService.login(email, password)
 
-      const payload = { id: user.id, email: user.email }
+      if (user.userType !== UserType.READER) {
+        throw new Error('Only readers can log in')
+      }
+
+      const payload = { id: user.id, email: user.email, userType: user.userType }
 
       const accessToken = fastify.jwt.sign(payload, { expiresIn: '15m' })
       const refreshToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
 
       await authService.storeRefreshToken(user.id, refreshToken)
 
-      return reply.send({ accessToken, refreshToken })
+      return reply.send({ user: payload, accessToken, refreshToken })
+    }
+  )
+
+  app.post(
+    '/admin-login',
+    {
+      schema: {
+        tags: ['Auth'],
+        body: LoginBodySchema,
+      }
+    },
+    async (request, reply) => {
+      const { email, password } = request.body as LoginBodyInput
+
+      const user = await authService.login(email, password)
+
+      if (user.userType !== UserType.ADMIN) {
+        throw new Error('Only admins can log in here')
+      }
+
+      const payload = { id: user.id, email: user.email, userType: user.userType }
+
+      const accessToken = fastify.jwt.sign(payload, { expiresIn: '15m' })
+      const refreshToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
+
+      await authService.storeRefreshToken(user.id, refreshToken)
+
+      return reply.send({ user: payload, accessToken, refreshToken })
     }
   )
 
@@ -75,7 +111,6 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
     {
       schema: {
         tags: ['Auth'],
-        response: { 200: TokenResponseSchema }
       }
     },
     async (request, reply) => {
@@ -88,7 +123,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
 
       const user = await authService.refresh(id, refreshToken)
 
-      const payload = { id: user.id, email }
+      const payload = { id: user.id, email, userType: user.userType }
 
       const newAccessToken = fastify.jwt.sign(payload, { expiresIn: '15m' })
       const newRefreshToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
@@ -96,6 +131,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
       await authService.storeRefreshToken(user.id, newRefreshToken)
 
       return reply.send({
+        user: payload,
         accessToken: newAccessToken,
         refreshToken: newRefreshToken
       })

@@ -1,5 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm'
 
+export enum UserType {
+  READER = 'reader',
+  AUTHOR = 'author',
+  ADMIN = 'admin',
+}
+
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
@@ -13,6 +19,9 @@ export class User {
 
   @Column({ type: 'varchar' })
   passwordHash!: string
+
+  @Column({ type: "enum", enum: UserType, default: UserType.READER })
+  userType!: UserType
 
   @Column({ type: "varchar", nullable: true })
   refreshTokenHash?: string | null

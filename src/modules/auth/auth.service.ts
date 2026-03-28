@@ -4,18 +4,19 @@ import {
   ConflictError,
   UnauthorizedError
 } from '../../common/error'
+import { RegisterBodyInput } from './auth.schema'
 
 export class AuthService {
-  constructor(private readonly repo: AuthRepository) {}
+  constructor(private readonly repo: AuthRepository) { }
 
-  async register(email: string, password: string) {
-    const exists = await this.repo.findByEmail(email)
+  async register(user: RegisterBodyInput) {
+    const exists = await this.repo.findByEmail(user.email)
     if (exists) {
       throw new ConflictError('Email already exists')
     }
 
-    const passwordHash = await hash(password, 10)
-    return this.repo.createUser(email, passwordHash)
+    const passwordHash = await hash(user.password, 10)
+    return this.repo.createUser({ ...user, passwordHash })
   }
 
   async login(email: string, password: string) {

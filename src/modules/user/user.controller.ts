@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { UserService } from './user.service'
+import { CreateUserInput } from './user.schema'
 
 type UserQuery = {
   page?: number
@@ -24,8 +25,8 @@ export class UserController {
     request: FastifyRequest<{ Body: { name: string; email: string } }>,
     reply: FastifyReply
   ) => {
-    const { name, email } = request.body
-    const user = await this.service.createUser(name, email)
+    const payload = request.body as CreateUserInput
+    const user = await this.service.createUser(payload)
     return reply.code(201).send(user)
   }
 }

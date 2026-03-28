@@ -25,7 +25,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   app.get(
     '/books',
     {
-      preHandler: [fastify.authenticate],
+      preHandler: [fastify.adminAuthenticate],
       schema: {
         tags: ['Book'],
       }
@@ -53,7 +53,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       }
     },
     controller.getChapterById
-  )
+   )
 
   app.get("/books/trending", {
     preHandler: [fastify.authenticate],
@@ -94,7 +94,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   app.post(
     '/books',
     {
-      preHandler: [fastify.authenticate],
+      preHandler: [fastify.adminAuthenticate],
       schema: {
         tags: ['Book'],
         body: CreateBookBodySchema,
@@ -103,21 +103,10 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.createBook
   )
 
-  // app.post(
-  //   '/books/seed-data',
-  //   {
-  //     // preHandler: [fastify.authenticate],
-  //     schema: {
-  //       tags: ['Book'],
-  //     }
-  //   },
-  //   controller.seedBooks
-  // )
-
   app.post(
     '/books/:id/chapters',
     {
-      preHandler: [fastify.authenticate],
+      preHandler: [fastify.adminAuthenticate],
       schema: {
         tags: ['Book'],
         body: CreateOrUpdateChapterBodySchema,
@@ -129,7 +118,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   app.put(
     '/books/chapters/:id',
     {
-      preHandler: [fastify.authenticate],
+      preHandler: [fastify.adminAuthenticate],
       schema: {
         tags: ['Book'],
         body: CreateOrUpdateChapterBodySchema,
@@ -141,7 +130,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
    app.delete(
     '/books/chapters/:id',
     {
-      preHandler: [fastify.authenticate],
+      preHandler: [fastify.adminAuthenticate],
       schema: {
         tags: ['Book'],
       }

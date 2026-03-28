@@ -8,8 +8,8 @@ export class AuthRepository {
     return this.repo.findOne({ where: { email } })
   }
 
-  createUser(email: string, passwordHash: string) {
-    const user = this.repo.create({ email, passwordHash })
+  createUser(userData: Partial<User>) {
+    const user = this.repo.create(userData)
     return this.repo.save(user)
   }
 
