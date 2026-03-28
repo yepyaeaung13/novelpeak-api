@@ -1,8 +1,9 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm"
 import { User } from "../../user/user.entity"
 import { Book } from "./book.entity"
 
 @Entity("favorites")
+@Unique(["user", "book"])
 export class Favorite {
   @PrimaryGeneratedColumn()
   id!: number

@@ -35,8 +35,16 @@ export class BookService {
     return this.repo.getRecommendedBooks()
   }
 
-  async getBooksByUserId(userId: number, page: number, limit: number) {
-    return this.repo.paginateByUserId(userId, page, limit)
+  async getMyLibrary(userId: number) {
+    return this.repo.getLibrary(userId);
+  }
+
+  async addToLibrary(userId: number, bookId: number) {
+    return this.repo.add(userId, bookId);
+  }
+
+  async removeFromLibrary(userId: number, bookId: number) {
+    return this.repo.remove(userId, bookId);
   }
 
   async createBook(book: CreateBookInput) {
@@ -53,7 +61,7 @@ export class BookService {
     return user
   }
 
-   async getChapterById(id: number) {
+  async getChapterById(id: number) {
     const user = await this.chapterRepo.findWithNavigation(id)
 
     if (!user) {

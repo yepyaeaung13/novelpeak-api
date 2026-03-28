@@ -6,6 +6,8 @@ import { Post } from '../modules/post/post.entity'
 import { Book } from '../modules/book/entity/book.entity'
 import { Chapter } from '../modules/book/entity/chapter.entity'
 import { Category } from '../modules/book/entity/category.entity'
+import { ReadingProgress } from '../modules/book/entity/reading.entity'
+import { Favorite } from '../modules/book/entity/favorite,entity'
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -21,7 +23,9 @@ export const AppDataSource = new DataSource({
     Post,
     Book,
     Chapter,
-    Category
+    Category,
+    ReadingProgress,
+    Favorite
   ]
 })
 

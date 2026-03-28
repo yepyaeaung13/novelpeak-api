@@ -2,8 +2,8 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { User } from "../../user/user.entity"
 import { Chapter } from "./chapter.entity"
 
-@Entity("bookmarks")
-export class Bookmark {
+@Entity("reading_progress")
+export class ReadingProgress {
   @PrimaryGeneratedColumn()
   id!: number
 

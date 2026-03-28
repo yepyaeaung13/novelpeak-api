@@ -43,7 +43,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
 
       await authService.storeRefreshToken(user.id, refreshToken)
 
-      return reply.code(201).send({ user: payload, accessToken, refreshToken })
+      return reply.code(201).send({ user: { ...payload, name: user.name }, accessToken, refreshToken })
     }
   )
 

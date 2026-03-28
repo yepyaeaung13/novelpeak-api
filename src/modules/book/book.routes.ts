@@ -9,14 +9,18 @@ import { BookService } from './book.service'
 import { BookController } from './book.controller'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { Chapter } from './entity/chapter.entity'
+import { ReadingProgress } from './entity/reading.entity'
+import { Favorite } from './entity/favorite,entity'
 
 const bookRoutes: FastifyPluginAsync = async (fastify) => {
   const app = fastify.withTypeProvider<TypeBoxTypeProvider>();
 
   const book = app.db.getRepository(Book);
   const chapter = app.db.getRepository(Chapter);
+  const favorite = app.db.getRepository(Favorite);
+  const readingProgress = app.db.getRepository(ReadingProgress);
 
-  const bookRepo = new BookRepository(book);
+  const bookRepo = new BookRepository(book, favorite, readingProgress);
   const chapterRepo = new ChapterRepository(chapter);
 
   const service = new BookService(bookRepo, chapterRepo)
@@ -44,7 +48,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.getBookById
   )
 
-   app.get(
+  app.get(
     '/books/chapters/:id',
     {
       // preHandler: [fastify.authenticate],
@@ -53,7 +57,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       }
     },
     controller.getChapterById
-   )
+  )
 
   app.get("/books/trending", {
     // preHandler: [fastify.authenticate],
@@ -82,14 +86,36 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.getRecommendedBooks
   )
 
-  app.get("/books/my-books", {
-    preHandler: [fastify.authenticate],
-    schema: {
-      tags: ['Book'],
-    }
-  },
-    controller.getBooksByUserId
-  )
+  app.get(
+    "/me/library",
+    {
+      preHandler: [fastify.authenticate],
+      schema: {
+        tags: ["Library"],
+      },
+    },
+    controller.getMyLibrary
+  );
+
+  // Add to library
+  app.post(
+    "/me/library",
+    {
+      preHandler: [fastify.authenticate],
+      schema: { tags: ["Library"] },
+    },
+    controller.addToLibrary
+  );
+
+  // Remove from library
+  app.delete(
+    "/me/library/:bookId",
+    {
+      preHandler: [fastify.authenticate],
+      schema: { tags: ["Library"] },
+    },
+    controller.removeFromLibrary
+  );
 
   app.post(
     '/books',
@@ -127,7 +153,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.updateChapter
   )
 
-   app.delete(
+  app.delete(
     '/books/chapters/:id',
     {
       preHandler: [fastify.adminAuthenticate],

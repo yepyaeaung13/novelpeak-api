@@ -1,9 +1,15 @@
 import { Repository } from "typeorm";
 import { Book } from "./entity/book.entity";
 import { Chapter } from "./entity/chapter.entity";
+import { ReadingProgress } from "./entity/reading.entity";
+import { Favorite } from "./entity/favorite,entity";
 
 export class BookRepository {
-  constructor(private readonly repo: Repository<Book>) { }
+  constructor(
+    private readonly repo: Repository<Book>,
+    private readonly favRepo: Repository<Favorite>,
+    private readonly progressRepo: Repository<ReadingProgress>
+  ) { }
 
   async paginate(page: number, limit: number) {
     const [data, total] = await this.repo
@@ -57,6 +63,63 @@ export class BookRepository {
       skip: (page - 1) * limit,
       take: limit,
       order: { createdAt: "DESC" },
+    });
+  }
+
+  async getLibrary(userId: number) {
+    const favorites = await this.favRepo.find({
+      where: { user: { id: userId } },
+      relations: ["book"],
+    });
+
+    const result = [];
+
+    for (const fav of favorites) {
+      const progress = await this.progressRepo.findOne({
+        where: {
+          user: { id: userId },
+          chapter: { book: { id: fav.book.id } },
+        },
+        relations: ["chapter"],
+        order: {
+          chapter: {
+            chapterNumber: "DESC", // latest chapter
+          },
+        },
+      });
+
+      result.push({
+        novelId: fav.book.id,
+        title: fav.book.title,
+        cover: fav.book.coverImage,
+        author: fav.book.author,
+
+        lastReadChapter: progress?.chapter
+          ? {
+            id: progress.chapter.id,
+            chapterNumber: progress.chapter.chapterNumber,
+          }
+          : null,
+      });
+    }
+
+    return result;
+  }
+
+  async add(userId: number, bookId: number) {
+    return this.favRepo.upsert(
+      {
+        user: { id: userId },
+        book: { id: bookId },
+      },
+      ["user", "book"] // requires @Unique(["user","book"])
+    );
+  }
+
+  async remove(userId: number, bookId: number) {
+    return this.favRepo.delete({
+      user: { id: userId },
+      book: { id: bookId },
     });
   }
 }

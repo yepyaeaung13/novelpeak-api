@@ -61,16 +61,38 @@ export class BookController {
     return reply.send(result);
   };
 
-  getBooksByUserId = async (
+  getMyLibrary = async (
     request: FastifyRequest<{ Querystring: BookQuery }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) => {
     const userId = request.user.id;
-    const page = request.query.page ?? 1;
-    const limit = request.query.limit ?? 10;
+    // const page = request.query.page ?? 1;
+    // const limit = request.query.limit ?? 10;
 
-    const result = await this.service.getBooksByUserId(userId, page, limit);
+    const result = await this.service.getMyLibrary(userId);
     return reply.send(result);
+  };
+
+  addToLibrary = async (
+    request: FastifyRequest<{ Body: { bookId: number } }>,
+    reply: FastifyReply
+  ) => {
+    const userId = request.user.id;
+    const { bookId } = request.body;
+
+    const result = await this.service.addToLibrary(userId, bookId);
+    return reply.send(result);
+  };
+
+  removeFromLibrary = async (
+    request: FastifyRequest<{ Params: { bookId: number } }>,
+    reply: FastifyReply
+  ) => {
+    const userId = request.user.id;
+    const { bookId } = request.params;
+
+    await this.service.removeFromLibrary(userId, bookId);
+    return reply.send({ success: true });
   };
 
   createBook = async (
