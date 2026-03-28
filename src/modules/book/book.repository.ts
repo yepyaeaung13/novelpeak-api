@@ -101,7 +101,7 @@ export class ChapterRepository {
   }
 
   async updateChapter(id: number, data: Partial<Chapter>) {
-    const chapter = await this.repo.find({ where: { id } })
+    const chapter = await this.repo.findOne({ where: { id } })
     if (!chapter) return null
     Object.assign(chapter, data)
     return this.repo.save(chapter)
