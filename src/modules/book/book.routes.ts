@@ -36,7 +36,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   app.get(
     '/books/:id',
     {
-      preHandler: [fastify.authenticate],
+      // preHandler: [fastify.authenticate],
       schema: {
         tags: ['Book'],
       }
@@ -47,7 +47,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
    app.get(
     '/books/chapters/:id',
     {
-      preHandler: [fastify.authenticate],
+      // preHandler: [fastify.authenticate],
       schema: {
         tags: ['Book'],
       }
@@ -56,7 +56,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
    )
 
   app.get("/books/trending", {
-    preHandler: [fastify.authenticate],
+    // preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
     }
@@ -65,7 +65,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   )
 
   app.get("/books/discover", {
-    preHandler: [fastify.authenticate],
+    // preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
     }
@@ -74,7 +74,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   )
 
   app.get("/books/recommended", {
-    preHandler: [fastify.authenticate],
+    // preHandler: [fastify.authenticate],
     schema: {
       tags: ['Book'],
     }
