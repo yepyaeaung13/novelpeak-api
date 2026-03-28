@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { BookService } from "./book.service";
 import { runSeed } from "../../seeds/seed";
-import { CreateBookInput, CreateOrUpdateChapterInput } from "./book.schema";
+import { CreateBookInput, CreateOrUpdateChapterInput, SaveProgressInput } from "./book.schema";
 
 type BookQuery = {
   page?: number;
@@ -95,12 +95,9 @@ export class BookController {
     return reply.send({ success: true });
   };
 
-  async saveReadingProgress(request: FastifyRequest, reply: FastifyReply) {
+  saveReadingProgress = async (request: FastifyRequest, reply: FastifyReply) => {
     const userId = request.user.id;
-    const { chapterId, progress } = request.body as {
-      chapterId: number;
-      progress: number;
-    };
+    const { chapterId, progress } = request.body as SaveProgressInput;
 
     await this.service.saveReadingProgress(userId, chapterId, progress);
     return reply.send({ success: true });

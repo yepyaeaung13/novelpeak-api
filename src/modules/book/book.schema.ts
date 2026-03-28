@@ -25,3 +25,9 @@ export const CreateOrUpdateChapterBodySchema = Type.Object({
   chapterNumber: Type.Number({ minimum: 1 })
 })
 export type CreateOrUpdateChapterInput = Static<typeof CreateOrUpdateChapterBodySchema>;
+
+export const SaveProgressBodySchema = Type.Object({
+  chapterId: Type.Number({ minimum: 1 }),
+  progress: Type.Number({ minimum: 0 })
+})
+export type SaveProgressInput = Static<typeof SaveProgressBodySchema>;

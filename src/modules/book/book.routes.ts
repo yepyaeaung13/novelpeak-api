@@ -2,6 +2,7 @@ import { FastifyPluginAsync } from 'fastify'
 import {
   CreateBookBodySchema,
   CreateOrUpdateChapterBodySchema,
+  SaveProgressBodySchema,
 } from './book.schema'
 import { Book } from './entity/book.entity'
 import { BookRepository, ChapterRepository } from './book.repository'
@@ -123,6 +124,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       preHandler: [fastify.authenticate],
       schema: {
         tags: ['Book'],
+        body: SaveProgressBodySchema,
       }
     },
     controller.saveReadingProgress
