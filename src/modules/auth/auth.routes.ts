@@ -72,7 +72,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
 
       await authService.storeRefreshToken(user.id, refreshToken)
 
-      return reply.send({ user: payload, accessToken, refreshToken })
+      return reply.send({ user: { ...payload, name: user.name }, accessToken, refreshToken })
     }
   )
 
@@ -100,7 +100,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
 
       await authService.storeRefreshToken(user.id, refreshToken)
 
-      return reply.send({ user: payload, accessToken, refreshToken })
+      return reply.send({ user: { ...payload, name: user.name }, accessToken, refreshToken })
     }
   )
 
