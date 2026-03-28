@@ -25,7 +25,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   app.get(
     '/books',
     {
-      preHandler: [fastify.adminAuthenticate],
+      // preHandler: [fastify.adminAuthenticate],
       schema: {
         tags: ['Book'],
       }
