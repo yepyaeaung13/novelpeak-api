@@ -47,28 +47,32 @@ export class BookService {
     return this.repo.remove(userId, bookId);
   }
 
+  async saveProgress(userId: number, chapterId: number, lastReadPosition: number) {
+    return this.repo.saveProgress(userId, chapterId, lastReadPosition);
+  }
+
   async createBook(book: CreateBookInput) {
     return this.repo.create(book)
   }
 
   async getBookById(id: number) {
-    const user = await this.repo.findById(id)
+    const book = await this.repo.findById(id)
 
-    if (!user) {
+    if (!book) {
       throw new NotFoundError('Book not found')
     }
 
-    return user
+    return book
   }
 
   async getChapterById(id: number) {
-    const user = await this.chapterRepo.findWithNavigation(id)
+    const chapter = await this.chapterRepo.findWithNavigation(id)
 
-    if (!user) {
-      throw new NotFoundError('Book not found')
+    if (!chapter) {
+      throw new NotFoundError('Chapter not found')
     }
 
-    return user
+    return chapter
   }
 
   async createChapter(bookId: number, chapter: CreateOrUpdateChapterInput) {

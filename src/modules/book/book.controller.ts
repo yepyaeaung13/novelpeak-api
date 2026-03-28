@@ -95,6 +95,17 @@ export class BookController {
     return reply.send({ success: true });
   };
 
+  async saveProgress(request: FastifyRequest, reply: FastifyReply) {
+    const userId = request.user.id;
+    const { chapterId, progress } = request.body as {
+      chapterId: number;
+      progress: number;
+    };
+
+    await this.service.saveProgress(userId, chapterId, progress);
+    return reply.send({ success: true });
+  }
+
   createBook = async (
     request: FastifyRequest,
     reply: FastifyReply,

@@ -122,6 +122,27 @@ export class BookRepository {
       book: { id: bookId },
     });
   }
+
+  async saveProgress(userId: number, chapterId: number, lastReadPosition: number) {
+    const existing = await this.progressRepo.findOne({
+      where: {
+        user: { id: userId },
+        chapter: { id: chapterId },
+      },
+    });
+
+    if (existing) {
+      existing.lastReadPosition = lastReadPosition;
+      return this.progressRepo.save(existing);
+    } else {
+      const progress = this.progressRepo.create({
+        user: { id: userId },
+        chapter: { id: chapterId },
+        lastReadPosition,
+      });
+      return this.progressRepo.save(progress);
+    }
+  }
 }
 
 export class ChapterRepository {

@@ -118,6 +118,17 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   );
 
   app.post(
+    '/books/saveProgress',
+    {
+      preHandler: [fastify.authenticate],
+      schema: {
+        tags: ['Book'],
+      }
+    },
+    controller.saveProgress
+  )
+
+  app.post(
     '/books',
     {
       preHandler: [fastify.adminAuthenticate],
