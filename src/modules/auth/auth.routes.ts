@@ -2,7 +2,6 @@ import { FastifyPluginAsync } from 'fastify'
 import {
   RegisterBodySchema,
   LoginBodySchema,
-  TokenResponseSchema,
   RegisterBodyInput,
   LoginBodyInput
 } from './auth.schema'

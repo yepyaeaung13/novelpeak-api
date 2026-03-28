@@ -14,11 +14,6 @@ export const LoginBodySchema = Type.Object({
   password: Type.String({ minLength: 6 })
 })
 
-export const TokenResponseSchema = Type.Object({
-  accessToken: Type.String(),
-  refreshToken: Type.String()
-})
-
 export type RegisterBodyInput = typeof RegisterBodySchema.static
 export type LoginBodyInput = typeof LoginBodySchema.static
 
