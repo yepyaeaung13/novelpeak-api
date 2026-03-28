@@ -47,7 +47,7 @@ export class BookService {
     return this.repo.remove(userId, bookId);
   }
 
-  async saveProgress(userId: number, chapterId: number, lastReadPosition: number) {
+  async saveReadingProgress(userId: number, chapterId: number, lastReadPosition: number) {
     return this.repo.saveProgress(userId, chapterId, lastReadPosition);
   }
 

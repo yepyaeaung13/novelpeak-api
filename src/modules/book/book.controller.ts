@@ -102,7 +102,7 @@ export class BookController {
       progress: number;
     };
 
-    await this.service.saveProgress(userId, chapterId, progress);
+    await this.service.saveReadingProgress(userId, chapterId, progress);
     return reply.send({ success: true });
   }
 
