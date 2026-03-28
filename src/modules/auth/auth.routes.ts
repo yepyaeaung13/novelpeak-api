@@ -67,7 +67,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
 
       const payload = { id: user.id, email: user.email, userType: user.userType }
 
-      const accessToken = fastify.jwt.sign(payload, { expiresIn: '15m' })
+      const accessToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
       const refreshToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
 
       await authService.storeRefreshToken(user.id, refreshToken)
@@ -95,7 +95,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
 
       const payload = { id: user.id, email: user.email, userType: user.userType }
 
-      const accessToken = fastify.jwt.sign(payload, { expiresIn: '15m' })
+      const accessToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
       const refreshToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
 
       await authService.storeRefreshToken(user.id, refreshToken)
@@ -124,7 +124,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
 
       const payload = { id: user.id, email, userType: user.userType }
 
-      const newAccessToken = fastify.jwt.sign(payload, { expiresIn: '15m' })
+      const newAccessToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
       const newRefreshToken = fastify.jwt.sign(payload, { expiresIn: '7d' })
 
       await authService.storeRefreshToken(user.id, newRefreshToken)
