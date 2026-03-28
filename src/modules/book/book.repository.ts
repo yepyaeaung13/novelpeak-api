@@ -3,14 +3,16 @@ import { Book } from "./entity/book.entity";
 import { Chapter } from "./entity/chapter.entity";
 
 export class BookRepository {
-  constructor(private readonly repo: Repository<Book>) {}
+  constructor(private readonly repo: Repository<Book>) { }
 
   async paginate(page: number, limit: number) {
-    const [data, total] = await this.repo.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-      order: { createdAt: "DESC" },
-    });
+    const [data, total] = await this.repo
+      .createQueryBuilder("parent")
+      .loadRelationCountAndMap("parent.chapterCount", "parent.chapters")
+      .orderBy("parent.createdAt", "DESC")
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
 
     return { data, total };
   }
@@ -60,7 +62,7 @@ export class BookRepository {
 }
 
 export class ChapterRepository {
-  constructor(private readonly repo: Repository<Chapter>) {}
+  constructor(private readonly repo: Repository<Chapter>) { }
 
   findById(id: number) {
     return this.repo.findOne({ where: { id }, relations: ["book"] });
