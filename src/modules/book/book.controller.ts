@@ -95,7 +95,7 @@ export class BookController {
     return reply.send({ success: true });
   };
 
-  async saveProgress(request: FastifyRequest, reply: FastifyReply) {
+  async saveReadingProgress(request: FastifyRequest, reply: FastifyReply) {
     const userId = request.user.id;
     const { chapterId, progress } = request.body as {
       chapterId: number;

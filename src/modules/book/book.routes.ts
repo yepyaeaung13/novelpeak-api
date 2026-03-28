@@ -125,7 +125,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
         tags: ['Book'],
       }
     },
-    controller.saveProgress
+    controller.saveReadingProgress
   )
 
   app.post(
