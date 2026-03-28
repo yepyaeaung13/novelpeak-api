@@ -126,7 +126,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.createChapter
   )
 
-  app.patch(
+  app.put(
     '/books/chapters/:id',
     {
       preHandler: [fastify.authenticate],
