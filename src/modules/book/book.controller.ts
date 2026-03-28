@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { BookService } from "./book.service";
 import { runSeed } from "../../seeds/seed";
-import { CreateBookInput, CreateChapterInput } from "./book.schema";
+import { CreateBookInput, CreateOrUpdateChapterInput } from "./book.schema";
 
 type BookQuery = {
   page?: number;
@@ -38,7 +38,7 @@ export class BookController {
 
   createChapter = async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
-    const chapter = request.body as CreateChapterInput;
+    const chapter = request.body as CreateOrUpdateChapterInput;
     const result = await this.service.createChapter(Number(id), chapter);
     return reply.code(201).send(result);
   };
@@ -89,4 +89,21 @@ export class BookController {
     await runSeed();
     return reply.code(201).send({ message: "Seed successfully." });
   };
+
+  updateChapter = async (request: FastifyRequest, reply: FastifyReply) => {
+    const chapterId = (request.params as { id: string }).id
+    const payload = request.body as CreateOrUpdateChapterInput
+
+    const updatedChapter = await this.service.updateChapter(Number(chapterId), payload)
+
+    return reply.code(200).send(updatedChapter)
+  }
+
+  deleteChapter = async (request: FastifyRequest, reply: FastifyReply) => {
+    const chapterId = (request.params as { id: string }).id
+
+    const updatedChapter = await this.service.deleteChapter(Number(chapterId))
+
+    return reply.code(200).send(updatedChapter)
+  }
 }

@@ -99,4 +99,17 @@ export class ChapterRepository {
       nextChapterId: next?.id ?? null,
     };
   }
+
+  async updateChapter(id: number, data: Partial<Chapter>) {
+    const chapter = await this.repo.find({ where: { id } })
+    if (!chapter) return null
+    Object.assign(chapter, data)
+    return this.repo.save(chapter)
+  }
+
+  async deleteChapter(id: number) {
+    const chapter = await this.repo.find({ where: { id } })
+    if (!chapter) return null
+    return this.repo.remove(chapter)
+  }
 }

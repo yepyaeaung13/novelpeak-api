@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
 import {
   CreateBookBodySchema,
-  CreateChapterBodySchema
+  CreateOrUpdateChapterBodySchema,
 } from './book.schema'
 import { Book } from './entity/book.entity'
 import { BookRepository, ChapterRepository } from './book.repository'
@@ -96,23 +96,23 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     {
       preHandler: [fastify.authenticate],
       schema: {
-        tags: ['Post'],
+        tags: ['Book'],
         body: CreateBookBodySchema,
       }
     },
     controller.createBook
   )
 
-  app.post(
-    '/books/seed-data',
-    {
-      // preHandler: [fastify.authenticate],
-      schema: {
-        tags: ['Post'],
-      }
-    },
-    controller.seedBooks
-  )
+  // app.post(
+  //   '/books/seed-data',
+  //   {
+  //     // preHandler: [fastify.authenticate],
+  //     schema: {
+  //       tags: ['Book'],
+  //     }
+  //   },
+  //   controller.seedBooks
+  // )
 
   app.post(
     '/books/:id/chapters',
@@ -120,10 +120,33 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       preHandler: [fastify.authenticate],
       schema: {
         tags: ['Book'],
-        body: CreateChapterBodySchema,
+        body: CreateOrUpdateChapterBodySchema,
       }
     },
     controller.createChapter
+  )
+
+  app.patch(
+    '/books/chapters/:id',
+    {
+      preHandler: [fastify.authenticate],
+      schema: {
+        tags: ['Book'],
+        body: CreateOrUpdateChapterBodySchema,
+      }
+    },
+    controller.updateChapter
+  )
+
+   app.delete(
+    '/books/chapters/:id',
+    {
+      preHandler: [fastify.authenticate],
+      schema: {
+        tags: ['Book'],
+      }
+    },
+    controller.deleteChapter
   )
 }
 

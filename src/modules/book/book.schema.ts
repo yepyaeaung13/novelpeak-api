@@ -19,9 +19,9 @@ export const CreateBookBodySchema = Type.Object({
 })
 export type CreateBookInput = Static<typeof CreateBookBodySchema>;
 
-export const CreateChapterBodySchema = Type.Object({
+export const CreateOrUpdateChapterBodySchema = Type.Object({
   title: Type.String({ minLength: 1 }),
   content: Type.String({ minLength: 1 }),
   chapterNumber: Type.Number({ minimum: 1 })
 })
-export type CreateChapterInput = Static<typeof CreateChapterBodySchema>;
+export type CreateOrUpdateChapterInput = Static<typeof CreateOrUpdateChapterBodySchema>;

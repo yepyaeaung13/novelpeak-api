@@ -1,6 +1,7 @@
 import { NotFoundError } from '../../common/error'
 import { BookRepository, ChapterRepository } from './book.repository'
-import { CreateBookInput, CreateChapterInput } from './book.schema'
+import { CreateBookInput, CreateOrUpdateChapterInput } from './book.schema'
+import { Chapter } from './entity/chapter.entity'
 
 export class BookService {
   constructor(
@@ -62,7 +63,7 @@ export class BookService {
     return user
   }
 
-  async createChapter(bookId: number, chapter: CreateChapterInput) {
+  async createChapter(bookId: number, chapter: CreateOrUpdateChapterInput) {
     const book = await this.repo.findById(bookId)
 
     if (!book) {
@@ -70,5 +71,21 @@ export class BookService {
     }
 
     return this.chapterRepo.create({ ...chapter, book })
+  }
+
+  async updateChapter(chapterId: number, data: Partial<Chapter>) {
+    const updated = await this.chapterRepo.updateChapter(chapterId, data)
+    if (!updated) {
+      throw new Error('Chapter not found')
+    }
+    return updated
+  }
+
+  async deleteChapter(chapterId: number) {
+    const deleted = await this.chapterRepo.deleteChapter(chapterId)
+    if (!deleted) {
+      throw new Error('Chapter not found')
+    }
+    return deleted
   }
 }
