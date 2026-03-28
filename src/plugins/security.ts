@@ -34,6 +34,8 @@ export default fp<SecurityPluginOptions>(
     // 🌐 CORS (LOCKED)
     await fastify.register(cors, {
       origin: true,
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
     });
   },
