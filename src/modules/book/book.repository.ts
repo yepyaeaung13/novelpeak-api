@@ -163,7 +163,7 @@ export class ChapterRepository {
     const [data, total] = await this.repo
       .createQueryBuilder("chapter")
       .where("chapter.bookId = :bookId", { bookId }) // ✅ filter by book
-      .orderBy("chapter.createdAt", "DESC")
+      .orderBy("chapter.createdAt", "ASC")
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
