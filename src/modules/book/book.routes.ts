@@ -1,17 +1,17 @@
-import { FastifyPluginAsync } from 'fastify'
+import { FastifyPluginAsync } from "fastify";
 import {
   CreateBookBodySchema,
   CreateOrUpdateChapterBodySchema,
   SaveProgressBodySchema,
-} from './book.schema'
-import { Book } from './entity/book.entity'
-import { BookRepository, ChapterRepository } from './book.repository'
-import { BookService } from './book.service'
-import { BookController } from './book.controller'
-import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
-import { Chapter } from './entity/chapter.entity'
-import { ReadingProgress } from './entity/reading.entity'
-import { Favorite } from './entity/favorite,entity'
+} from "./book.schema";
+import { Book } from "./entity/book.entity";
+import { BookRepository, ChapterRepository } from "./book.repository";
+import { BookService } from "./book.service";
+import { BookController } from "./book.controller";
+import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
+import { Chapter } from "./entity/chapter.entity";
+import { ReadingProgress } from "./entity/reading.entity";
+import { Favorite } from "./entity/favorite,entity";
 
 const bookRoutes: FastifyPluginAsync = async (fastify) => {
   const app = fastify.withTypeProvider<TypeBoxTypeProvider>();
@@ -24,68 +24,74 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
   const bookRepo = new BookRepository(book, favorite, readingProgress);
   const chapterRepo = new ChapterRepository(chapter);
 
-  const service = new BookService(bookRepo, chapterRepo)
-  const controller = new BookController(service)
+  const service = new BookService(bookRepo, chapterRepo);
+  const controller = new BookController(service);
 
   app.get(
-    '/books',
+    "/books",
     {
       // preHandler: [fastify.adminAuthenticate],
       schema: {
-        tags: ['Book'],
-      }
+        tags: ["Book"],
+      },
     },
-    controller.getBooks
-  )
+    controller.getBooks,
+  );
 
   app.get(
-    '/books/:id',
+    "/books/:id",
     {
       // preHandler: [fastify.authenticate],
       schema: {
-        tags: ['Book'],
-      }
+        tags: ["Book"],
+      },
     },
-    controller.getBookById
-  )
+    controller.getBookById,
+  );
 
   app.get(
-    '/books/chapters/:id',
+    "/books/chapters/:id",
     {
       // preHandler: [fastify.authenticate],
       schema: {
-        tags: ['Book'],
-      }
+        tags: ["Book"],
+      },
     },
-    controller.getChapterById
-  )
+    controller.getChapterById,
+  );
 
-  app.get("/books/trending", {
-    // preHandler: [fastify.authenticate],
-    schema: {
-      tags: ['Book'],
-    }
-  },
-    controller.getTrendingBooks
-  )
+  app.get(
+    "/books/trending",
+    {
+      // preHandler: [fastify.authenticate],
+      schema: {
+        tags: ["Book"],
+      },
+    },
+    controller.getTrendingBooks,
+  );
 
-  app.get("/books/discover", {
-    // preHandler: [fastify.authenticate],
-    schema: {
-      tags: ['Book'],
-    }
-  },
-    controller.getDiscoverBooks
-  )
+  app.get(
+    "/books/discover",
+    {
+      // preHandler: [fastify.authenticate],
+      schema: {
+        tags: ["Book"],
+      },
+    },
+    controller.getDiscoverBooks,
+  );
 
-  app.get("/books/recommended", {
-    // preHandler: [fastify.authenticate],
-    schema: {
-      tags: ['Book'],
-    }
-  },
-    controller.getRecommendedBooks
-  )
+  app.get(
+    "/books/recommended",
+    {
+      // preHandler: [fastify.authenticate],
+      schema: {
+        tags: ["Book"],
+      },
+    },
+    controller.getRecommendedBooks,
+  );
 
   app.get(
     "/me/library",
@@ -95,7 +101,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
         tags: ["Library"],
       },
     },
-    controller.getMyLibrary
+    controller.getMyLibrary,
   );
 
   // Add to library
@@ -105,7 +111,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       preHandler: [fastify.authenticate],
       schema: { tags: ["Library"] },
     },
-    controller.addToLibrary
+    controller.addToLibrary,
   );
 
   // Remove from library
@@ -115,67 +121,79 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       preHandler: [fastify.authenticate],
       schema: { tags: ["Library"] },
     },
-    controller.removeFromLibrary
+    controller.removeFromLibrary,
   );
 
   app.post(
-    '/books/saveProgress',
+    "/books/saveProgress",
     {
       preHandler: [fastify.authenticate],
       schema: {
-        tags: ['Book'],
+        tags: ["Book"],
         body: SaveProgressBodySchema,
-      }
+      },
     },
-    controller.saveReadingProgress
-  )
+    controller.saveReadingProgress,
+  );
 
   app.post(
-    '/books',
+    "/books",
     {
       preHandler: [fastify.adminAuthenticate],
       schema: {
-        tags: ['Book'],
+        tags: ["Book"],
         body: CreateBookBodySchema,
-      }
+      },
     },
-    controller.createBook
-  )
-
-  app.post(
-    '/books/:id/chapters',
-    {
-      preHandler: [fastify.adminAuthenticate],
-      schema: {
-        tags: ['Book'],
-        body: CreateOrUpdateChapterBodySchema,
-      }
-    },
-    controller.createChapter
-  )
+    controller.createBook,
+  );
 
   app.put(
-    '/books/chapters/:id',
+    "/books/:id",
     {
       preHandler: [fastify.adminAuthenticate],
       schema: {
-        tags: ['Book'],
-        body: CreateOrUpdateChapterBodySchema,
-      }
+        tags: ["Book"],
+        body: CreateBookBodySchema,
+      },
     },
-    controller.updateChapter
-  )
+    controller.updateBook,
+  );
+
+  app.post(
+    "/books/:id/chapters",
+    {
+      preHandler: [fastify.adminAuthenticate],
+      schema: {
+        tags: ["Book"],
+        body: CreateOrUpdateChapterBodySchema,
+      },
+    },
+    controller.createChapter,
+  );
+
+  app.put(
+    "/books/chapters/:id",
+    {
+      preHandler: [fastify.adminAuthenticate],
+      schema: {
+        tags: ["Book"],
+        body: CreateOrUpdateChapterBodySchema,
+      },
+    },
+    controller.updateChapter,
+  );
 
   app.delete(
-    '/books/chapters/:id',
+    "/books/chapters/:id",
     {
       preHandler: [fastify.adminAuthenticate],
       schema: {
-        tags: ['Book'],
-      }
+        tags: ["Book"],
+      },
     },
-    controller.deleteChapter
-  )
-}
+    controller.deleteChapter,
+  );
+};
 
-export default bookRoutes
+export default bookRoutes;

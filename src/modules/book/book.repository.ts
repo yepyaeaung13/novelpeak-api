@@ -8,8 +8,8 @@ export class BookRepository {
   constructor(
     private readonly repo: Repository<Book>,
     private readonly favRepo: Repository<Favorite>,
-    private readonly progressRepo: Repository<ReadingProgress>
-  ) { }
+    private readonly progressRepo: Repository<ReadingProgress>,
+  ) {}
 
   async paginate(page: number, limit: number) {
     const [data, total] = await this.repo
@@ -36,6 +36,13 @@ export class BookRepository {
 
   create(data: Partial<Book>) {
     const book = this.repo.create(data);
+    return this.repo.save(book);
+  }
+
+  async update(id: number, data: Partial<Book>) {
+    const book = await this.repo.findOne({ where: { id } });
+    if (!book) return null;
+    Object.assign(book, data);
     return this.repo.save(book);
   }
 
@@ -96,9 +103,9 @@ export class BookRepository {
 
         lastReadChapter: progress?.chapter
           ? {
-            id: progress.chapter.id,
-            chapterNumber: progress.chapter.chapterNumber,
-          }
+              id: progress.chapter.id,
+              chapterNumber: progress.chapter.chapterNumber,
+            }
           : null,
       });
     }
@@ -112,7 +119,7 @@ export class BookRepository {
         user: { id: userId },
         book: { id: bookId },
       },
-      ["user", "book"] // requires @Unique(["user","book"])
+      ["user", "book"], // requires @Unique(["user","book"])
     );
   }
 
@@ -123,7 +130,11 @@ export class BookRepository {
     });
   }
 
-  async saveProgress(userId: number, chapterId: number, lastReadPosition: number) {
+  async saveProgress(
+    userId: number,
+    chapterId: number,
+    lastReadPosition: number,
+  ) {
     const existing = await this.progressRepo.findOne({
       where: {
         user: { id: userId },
@@ -146,7 +157,7 @@ export class BookRepository {
 }
 
 export class ChapterRepository {
-  constructor(private readonly repo: Repository<Chapter>) { }
+  constructor(private readonly repo: Repository<Chapter>) {}
 
   findById(id: number) {
     return this.repo.findOne({ where: { id }, relations: ["book"] });
@@ -187,15 +198,15 @@ export class ChapterRepository {
   }
 
   async updateChapter(id: number, data: Partial<Chapter>) {
-    const chapter = await this.repo.findOne({ where: { id } })
-    if (!chapter) return null
-    Object.assign(chapter, data)
-    return this.repo.save(chapter)
+    const chapter = await this.repo.findOne({ where: { id } });
+    if (!chapter) return null;
+    Object.assign(chapter, data);
+    return this.repo.save(chapter);
   }
 
   async deleteChapter(id: number) {
-    const chapter = await this.repo.find({ where: { id } })
-    if (!chapter) return null
-    return this.repo.remove(chapter)
+    const chapter = await this.repo.find({ where: { id } });
+    if (!chapter) return null;
+    return this.repo.remove(chapter);
   }
 }

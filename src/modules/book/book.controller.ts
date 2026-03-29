@@ -1,7 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { BookService } from "./book.service";
 import { runSeed } from "../../seeds/seed";
-import { CreateBookInput, CreateOrUpdateChapterInput, SaveProgressInput } from "./book.schema";
+import {
+  CreateBookInput,
+  CreateOrUpdateChapterInput,
+  SaveProgressInput,
+} from "./book.schema";
 
 type BookQuery = {
   page?: number;
@@ -9,7 +13,7 @@ type BookQuery = {
 };
 
 export class BookController {
-  constructor(private readonly service: BookService) { }
+  constructor(private readonly service: BookService) {}
 
   getBooks = async (
     request: FastifyRequest<{ Querystring: BookQuery }>,
@@ -63,7 +67,7 @@ export class BookController {
 
   getMyLibrary = async (
     request: FastifyRequest<{ Querystring: BookQuery }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) => {
     const userId = request.user.id;
     // const page = request.query.page ?? 1;
@@ -75,7 +79,7 @@ export class BookController {
 
   addToLibrary = async (
     request: FastifyRequest<{ Body: { bookId: number } }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) => {
     const userId = request.user.id;
     const { bookId } = request.body;
@@ -86,7 +90,7 @@ export class BookController {
 
   removeFromLibrary = async (
     request: FastifyRequest<{ Params: { bookId: number } }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) => {
     const userId = request.user.id;
     const { bookId } = request.params;
@@ -95,45 +99,47 @@ export class BookController {
     return reply.send({ success: true });
   };
 
-  saveReadingProgress = async (request: FastifyRequest, reply: FastifyReply) => {
+  saveReadingProgress = async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ) => {
     const userId = request.user.id;
     const { chapterId, progress } = request.body as SaveProgressInput;
 
     await this.service.saveReadingProgress(userId, chapterId, progress);
     return reply.send({ success: true });
-  }
+  };
 
-  createBook = async (
-    request: FastifyRequest,
-    reply: FastifyReply,
-  ) => {
+  createBook = async (request: FastifyRequest, reply: FastifyReply) => {
     const book = request.body as CreateBookInput;
     const user = await this.service.createBook(book);
     return reply.code(201).send(user);
   };
 
-  seedBooks = async (
-    request: FastifyRequest,
-    reply: FastifyReply,
-  ) => {
-    await runSeed();
-    return reply.code(201).send({ message: "Seed successfully." });
+  updateBook = async (request: FastifyRequest, reply: FastifyReply) => {
+    const bookId = (request.params as { id: string }).id;
+    const book = request.body as CreateBookInput;
+    const user = await this.service.updateBook(Number(bookId), book);
+    return reply.code(201).send(user);
   };
 
   updateChapter = async (request: FastifyRequest, reply: FastifyReply) => {
-    const chapterId = (request.params as { id: string }).id
-    const payload = request.body as CreateOrUpdateChapterInput
+    const chapterId = (request.params as { id: string }).id;
+    const payload = request.body as CreateOrUpdateChapterInput;
 
-    const updatedChapter = await this.service.updateChapter(Number(chapterId), payload)
+    const updatedChapter = await this.service.updateChapter(
+      Number(chapterId),
+      payload,
+    );
 
-    return reply.code(200).send(updatedChapter)
-  }
+    return reply.code(200).send(updatedChapter);
+  };
 
   deleteChapter = async (request: FastifyRequest, reply: FastifyReply) => {
-    const chapterId = (request.params as { id: string }).id
+    const chapterId = (request.params as { id: string }).id;
 
-    const updatedChapter = await this.service.deleteChapter(Number(chapterId))
+    const updatedChapter = await this.service.deleteChapter(Number(chapterId));
 
-    return reply.code(200).send(updatedChapter)
-  }
+    return reply.code(200).send(updatedChapter);
+  };
 }

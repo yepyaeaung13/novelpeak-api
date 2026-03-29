@@ -55,6 +55,10 @@ export class BookService {
     return this.repo.create(book)
   }
 
+  async updateBook(id: number, book: CreateBookInput) {
+    return this.repo.update(id, book)
+  }
+
   async getBookById(id: number) {
     const book = await this.repo.findById(id)
 
