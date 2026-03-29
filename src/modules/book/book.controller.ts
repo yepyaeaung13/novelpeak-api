@@ -32,6 +32,18 @@ export class BookController {
     return reply.send(result);
   };
 
+  getChapters = async (
+    request: FastifyRequest<{ Querystring: BookQuery }>,
+    reply: FastifyReply,
+  ) => {
+    const { id } = request.params as { id: string };
+    const page = request.query.page ?? 1;
+    const limit = request.query.limit ?? 10;
+
+    const result = await this.service.getChapters(Number(id), page, limit);
+    return reply.send(result);
+  };
+
   getChapterById = async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
 

@@ -23,6 +23,21 @@ export class BookService {
     }
   }
 
+
+  async getChapters(id: number, page: number, limit: number) {
+    const { data, total } = await this.chapterRepo.paginate(id, page, limit)
+
+    return {
+      data,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    }
+  }
+
   async getDiscoverBooks() {
     return this.repo.getDiscoverBooks()
   }

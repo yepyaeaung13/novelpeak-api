@@ -159,6 +159,18 @@ export class BookRepository {
 export class ChapterRepository {
   constructor(private readonly repo: Repository<Chapter>) {}
 
+  async paginate(bookId: number, page: number, limit: number) {
+    const [data, total] = await this.repo
+      .createQueryBuilder("chapter")
+      .where("chapter.bookId = :bookId", { bookId }) // ✅ filter by book
+      .orderBy("chapter.createdAt", "DESC")
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return { data, total };
+  }
+
   findById(id: number) {
     return this.repo.findOne({ where: { id }, relations: ["book"] });
   }

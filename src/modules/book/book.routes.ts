@@ -49,6 +49,17 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.getBookById,
   );
 
+   app.get(
+    "/books/:id/chapters",
+    {
+      // preHandler: [fastify.adminAuthenticate],
+      schema: {
+        tags: ["Book"],
+      },
+    },
+    controller.getChapters,
+  );
+
   app.get(
     "/books/chapters/:id",
     {
