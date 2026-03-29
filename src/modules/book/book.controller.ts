@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { BookService } from "./book.service";
-import { runSeed } from "../../seeds/seed";
 import {
   CreateBookInput,
   CreateOrUpdateChapterInput,
