@@ -4,6 +4,7 @@ import {
   CreateBookInput,
   CreateOrUpdateChapterInput,
   SaveProgressInput,
+  TranslateInput,
 } from "./book.schema";
 
 type BookQuery = {
@@ -57,6 +58,13 @@ export class BookController {
     const result = await this.service.createChapter(Number(id), chapter);
     return reply.code(201).send(result);
   };
+
+  translateText = async (request: FastifyRequest, reply: FastifyReply) => {
+    const { text, targetLang } = request.body as TranslateInput;
+    const result = await this.service.translateText(text, targetLang);
+    return reply.send(result);
+  };
+
 
   getTrendingBooks = async (request: FastifyRequest, reply: FastifyReply) => {
     const result = await this.service.getTrendingBooks();

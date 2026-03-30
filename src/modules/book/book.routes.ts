@@ -3,6 +3,7 @@ import {
   CreateBookBodySchema,
   CreateOrUpdateChapterBodySchema,
   SaveProgressBodySchema,
+  TranslateBodySchema,
 } from "./book.schema";
 import { Book } from "./entity/book.entity";
 import { BookRepository, ChapterRepository } from "./book.repository";
@@ -49,7 +50,7 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
     controller.getBookById,
   );
 
-   app.get(
+  app.get(
     "/books/:id/chapters",
     {
       // preHandler: [fastify.adminAuthenticate],
@@ -181,6 +182,18 @@ const bookRoutes: FastifyPluginAsync = async (fastify) => {
       },
     },
     controller.createChapter,
+  );
+
+  app.post(
+    "/books/translate",
+    {
+      preHandler: [fastify.adminAuthenticate],
+      schema: {
+        tags: ["Book"],
+        body: TranslateBodySchema,
+      },
+    },
+    controller.translateText,
   );
 
   app.put(

@@ -31,3 +31,9 @@ export const SaveProgressBodySchema = Type.Object({
   progress: Type.Number({ minimum: 0 })
 })
 export type SaveProgressInput = Static<typeof SaveProgressBodySchema>;
+
+export const TranslateBodySchema = Type.Object({
+  text: Type.String({ minLength: 1 }),
+  targetLang: Type.String({ minLength: 2 })
+})
+export type TranslateInput = Static<typeof TranslateBodySchema>;
