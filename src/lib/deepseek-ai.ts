@@ -59,7 +59,7 @@ async function translateChunk(chunk: string, targetLang: string): Promise<string
         { role: 'user', content: chunk },
       ],
       temperature: 0.3,
-      max_tokens: 4000,
+      max_tokens: 25000,
     }),
   });
 
