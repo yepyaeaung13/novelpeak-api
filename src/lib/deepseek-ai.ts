@@ -8,7 +8,7 @@ const openai = new OpenAI({
  * Split text into chunks of roughly `maxChars` characters,
  * respecting paragraph boundaries.
  */
-function splitIntoChunks(text: string, maxLength = 2000): string[] {
+function splitIntoChunks(text: string, maxLength = 1200): string[] {
   const chunks: string[] = [];
   let current = "";
 
@@ -36,12 +36,21 @@ async function translateChunk(
     messages: [
       {
         role: "system",
-        content: `You are a professional translator. Translate the following text to ${targetLang}. Preserve style and nuance. Do NOT summarize. Do NOT omit anything. Translate FULL text.`,
+        content: `You are a translation engine.
+        STRICT RULES:
+        - Translate the text to ${targetLang}
+        - DO NOT explain anything
+        - DO NOT add extra sentences
+        - DO NOT add introductions
+        - DO NOT say anything before or after
+        - ONLY return the translated text
+        The output must start directly with translation.`,
       },
       { role: "user", content: chunk },
     ],
     model: "deepseek-chat",
     max_tokens: 4000,
+    temperature: 0,
   });
 
   return completion.choices[0].message.content ?? "";
