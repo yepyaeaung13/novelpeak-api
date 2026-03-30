@@ -39,7 +39,6 @@
     "openai": "^6.33.0",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "tiktoken": "^1.0.22",
     "typeorm": "^0.3.28",
     "uuid": "^13.0.0"
   },
