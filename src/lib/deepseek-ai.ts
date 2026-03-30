@@ -1,76 +1,62 @@
-import OpenAI from "openai";
+import { encoding_for_model } from 'tiktoken';
 
-const openai = new OpenAI({
-  baseURL: "https://api.deepseek.com",
-  apiKey: process.env.DEEPSEEK_API_KEY,
-});
-/**
- * Split text into chunks of roughly `maxChars` characters,
- * respecting paragraph boundaries.
- */
-function splitIntoChunks(text: string, maxLength = 1200): string[] {
+const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+const enc = encoding_for_model('gpt-4'); // DeepSeek compatible
+
+function splitByTokens(text: string, maxTokens: number): string[] {
+  const tokens = enc.encode(text);
   const chunks: string[] = [];
-  let current = "";
-
-  for (const paragraph of text.split("\n")) {
-    if ((current + paragraph).length > maxLength) {
-      chunks.push(current);
-      current = paragraph;
-    } else {
-      current += (current ? "\n" : "") + paragraph;
-    }
+  let start = 0;
+  while (start < tokens.length) {
+    const end = Math.min(start + maxTokens, tokens.length);
+    const chunkTokens = tokens.slice(start, end);
+    const chunk = enc.decode(chunkTokens);
+    chunks.push(chunk as any);
+    start = end;
   }
-
-  if (current) chunks.push(current);
   return chunks;
 }
 
-/**
- * Translate a single chunk via DeepSeek.
- */
-async function translateChunk(
-  chunk: string,
-  targetLang: string,
-): Promise<string> {
-  const completion = await openai.chat.completions.create({
-    messages: [
-      {
-        role: "system",
-        content: `You are a translation engine.
-        STRICT RULES:
-        - Translate the text to ${targetLang}
-        - DO NOT explain anything
-        - DO NOT add extra sentences
-        - DO NOT add introductions
-        - DO NOT say anything before or after
-        - ONLY return the translated text
-        The output must start directly with translation.`,
-      },
-      { role: "user", content: chunk },
-    ],
-    model: "deepseek-chat",
-    max_tokens: 4000,
-    temperature: 0,
+async function translateChunk(chunk: string, targetLang: string): Promise<string> {
+  const response = await fetch(DEEPSEEK_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'deepseek-chat',
+      messages: [
+        {
+          role: 'system',
+          content: `You are a professional translator. Translate the following text to ${targetLang}. Preserve the style and nuances of the original text. Output only the translated text.`,
+        },
+        { role: 'user', content: chunk },
+      ],
+      temperature: 0.3,
+      max_tokens: 4000, // ensure enough for output
+    }),
   });
 
-  return completion.choices[0].message.content ?? "";
-}
-
-/**
- * Main translation function: splits text, translates each chunk, joins.
- */
-export async function translateText(
-  text: string,
-  targetLang: string,
-): Promise<string> {
-  const chunks = splitIntoChunks(text, 2000);
-
-  const translatedChunks: string[] = [];
-
-  for (const chunk of chunks) {
-    const res = await translateChunk(chunk, targetLang);
-    translatedChunks.push(res);
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`DeepSeek API error: ${error}`);
   }
 
-  return translatedChunks.join("\n\n");
+  const data: any = await response.json();
+  return data.choices[0].message.content;
+}
+
+export async function translateText(text: string, targetLang: string): Promise<string> {
+  // Adjust maxTokens per chunk to leave room for output (e.g., 3000 tokens)
+  const maxInputTokens = 3000;
+  const chunks = splitByTokens(text, maxInputTokens);
+  console.log(`Splitting into ${chunks.length} chunks`);
+
+  const translatedChunks: string[] = [];
+  for (let i = 0; i < chunks.length; i++) {
+    console.log(`Translating chunk ${i + 1}/${chunks.length}`);
+    translatedChunks.push(await translateChunk(chunks[i], targetLang));
+  }
+  return translatedChunks.join('\n\n');
 }
