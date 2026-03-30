@@ -1,8 +1,5 @@
 import { NotFoundError } from "../../common/error";
-import {
-  splitTextIntoChunks,
-  translateChunk,
-} from "../../lib/deepseek-ai";
+import { translateText } from "../../lib/deepseek-ai";
 import { BookRepository, ChapterRepository } from "./book.repository";
 import { CreateBookInput, CreateOrUpdateChapterInput } from "./book.schema";
 import { Chapter } from "./entity/chapter.entity";
@@ -112,11 +109,9 @@ export class BookService {
   }
 
   async translateText(text: string, targetLang: string) {
-    const chunks = splitTextIntoChunks(text);
-    const translatedChunks = await Promise.all(
-      chunks.map((chunk) => translateChunk(chunk, targetLang)),
-    );
-    return translatedChunks.join("\n\n");
+    // Implementation for translating text
+    const response = await translateText(text, targetLang);
+    return response;
   }
 
   async updateChapter(chapterId: number, data: Partial<Chapter>) {
