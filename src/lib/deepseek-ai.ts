@@ -14,7 +14,7 @@ export async function translateText(
       {
         role: "system",
         // content: `You are a professional translator. Translate the following text to ${targetLang}. Preserve the style and nuances of the original text. Output only the translated text.`,
-        content: "You are a professional translator. Translate the following text to ${targetLang}. Preserve the original formatting, including line breaks and paragraphs. If the original lacks structure, add appropriate line breaks to enhance readability. Output only the translated text."
+        content: `You are a professional translator. Translate the following text to ${targetLang}. Preserve the original formatting, including line breaks and paragraphs. If the original lacks structure, add appropriate line breaks to enhance readability. Output only the translated text.`
       },
       { role: "user", content: text },
     ],
