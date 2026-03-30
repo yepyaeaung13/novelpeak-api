@@ -8,23 +8,22 @@ const openai = new OpenAI({
  * Split text into chunks of roughly `maxChars` characters,
  * respecting paragraph boundaries.
  */
-// function splitIntoChunks(text: string, maxChars = 2000): string[] {
-//   // Split by double newline (paragraphs)
-//   const paragraphs = text.split(/\n\s*\n/);
-//   const chunks: string[] = [];
-//   let current = "";
+function splitIntoChunks(text: string, maxLength = 2000): string[] {
+  const chunks: string[] = [];
+  let current = "";
 
-//   for (const para of paragraphs) {
-//     if (current.length + para.length + 2 > maxChars && current) {
-//       chunks.push(current);
-//       current = para;
-//     } else {
-//       current = current ? `${current}\n\n${para}` : para;
-//     }
-//   }
-//   if (current) chunks.push(current);
-//   return chunks;
-// }
+  for (const paragraph of text.split("\n")) {
+    if ((current + paragraph).length > maxLength) {
+      chunks.push(current);
+      current = paragraph;
+    } else {
+      current += (current ? "\n" : "") + paragraph;
+    }
+  }
+
+  if (current) chunks.push(current);
+  return chunks;
+}
 
 /**
  * Translate a single chunk via DeepSeek.
@@ -37,11 +36,12 @@ async function translateChunk(
     messages: [
       {
         role: "system",
-        content: `You are a professional translator. Translate the following text to ${targetLang}. Preserve the style and nuances of the original text. Output only the translated text.`,
+        content: `You are a professional translator. Translate the following text to ${targetLang}. Preserve style and nuance. Do NOT summarize. Do NOT omit anything. Translate FULL text.`,
       },
       { role: "user", content: chunk },
     ],
     model: "deepseek-chat",
+    max_tokens: 4000,
   });
 
   return completion.choices[0].message.content ?? "";
@@ -54,11 +54,14 @@ export async function translateText(
   text: string,
   targetLang: string,
 ): Promise<string> {
-  // const chunks = splitIntoChunks(text);
-  // const translatedChunks = await Promise.all(
-  //   chunks.map((chunk) => translateChunk(chunk, targetLang)),
-  // );
-  // return translatedChunks.join("\n\n");
-  const response = await translateChunk(text, targetLang);
-  return response ?? "";
+  const chunks = splitIntoChunks(text, 2000);
+
+  const translatedChunks: string[] = [];
+
+  for (const chunk of chunks) {
+    const res = await translateChunk(chunk, targetLang);
+    translatedChunks.push(res);
+  }
+
+  return translatedChunks.join("\n\n");
 }
